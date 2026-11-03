@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đi Chùa Online - Không Gian Chánh Niệm & Tịnh Tâm</title>
+    <title>Đi Chùa Online - Đạo Tràng 2D Isometric</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-gold: #d4af37;
             --deep-wood: #2c1d11;
-            --temple-red: #8b0000;
             --bg-dark: #120a05;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -21,393 +20,57 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow-x: hidden;
-            background-image: radial-gradient(circle at center, #2c1d11 0%, #120a05 100%);
+            overflow: hidden;
         }
         header {
             text-align: center;
-            padding: 15px;
+            padding: 10px;
             border-bottom: 1px solid rgba(212, 175, 55, 0.3);
             width: 100%;
-            background: rgba(18, 10, 5, 0.8);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            background: rgba(18, 10, 5, 0.9);
+            z-index: 10;
         }
         header h1 {
             font-family: 'Cinzel', serif;
             color: var(--primary-gold);
-            font-size: 1.5rem;
-            letter-spacing: 2px;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
         }
-        .container {
-            width: 100%;
-            max-width: 600px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
+        #game-container {
             position: relative;
-        }
-        /* Hiệu ứng hào quang & Khói hương */
-        .sanctuary-view {
             width: 100%;
-            height: 280px;
-            background: linear-gradient(to bottom, #1a0f08, #362214);
-            border-radius: 16px;
+            max-width: 800px;
+            height: 500px;
+            background: #1e1208;
             border: 2px solid var(--primary-gold);
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+            margin: 10px auto;
             overflow: hidden;
-            margin-bottom: 20px;
+            cursor: pointer;
         }
-        .buddha-glow {
-            width: 120px;
-            height: 120px;
-            background: radial-gradient(circle, rgba(255,215,0,0.4) 0%, rgba(212,175,55,0) 70%);
-            border-radius: 50%;
-            position: absolute;
-            animation: pulse 4s infinite alternate;
-        }
-        @keyframes pulse {
-            0% { transform: scale(0.9); opacity: 0.6; }
-            100% { transform: scale(1.1); opacity: 1; }
-        }
-        .altar-text {
-            z-index: 2;
-            text-align: center;
-            font-size: 1.1rem;
-            color: #ffd700;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-        }
-        /* Danh sách Phật tử Online */
-        .online-presence {
+        canvas {
+            display: block;
             width: 100%;
-            background: rgba(44, 29, 17, 0.6);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 10px;
-            padding: 10px;
-            margin-bottom: 20px;
-            font-size: 0.9rem;
-            text-align: center;
+            height: 100%;
         }
-        .online-avatars {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 8px;
-            flex-wrap: wrap;
-        }
-        .avatar-chip {
-            background: rgba(212, 175, 55, 0.15);
+        .hud {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(18, 10, 5, 0.8);
             border: 1px solid var(--primary-gold);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        /* Nút Gõ Mõ */
-        .wooden-fish-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-        .wooden-fish-btn {
-            width: 130px;
-            height: 130px;
-            background: radial-gradient(circle, #b85d19 0%, #632d0b 100%);
-            border: 4px solid var(--primary-gold);
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.1s, box-shadow 0.1s;
-            position: relative;
-        }
-        .wooden-fish-btn:active {
-            transform: scale(0.92);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.8);
-        }
-        .wooden-fish-btn span {
-            font-size: 2.5rem;
-        }
-        .merit-counter {
-            margin-top: 12px;
-            font-size: 1.2rem;
-            color: var(--primary-gold);
-            font-weight: bold;
-        }
-        /* Hiệu ứng chữ bay */
-        .floating-text {
-            position: absolute;
-            color: #ffd700;
-            font-weight: bold;
-            font-size: 1.2rem;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
             pointer-events: none;
-            animation: floatUp 1s ease-out forwards;
         }
-        @keyframes floatUp {
-            0% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(-50px); opacity: 0; }
-        }
-        /* Bảng điều khiển phụ */
-        .actions-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            width: 100%;
-        }
-        .action-card {
-            background: rgba(44, 29, 17, 0.8);
-            border: 1px solid rgba(212, 175, 55, 0.4);
-            padding: 12px;
-            border-radius: 10px;
+        .controls-hint {
             text-align: center;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        .action-card:hover {
-            background: rgba(60, 40, 24, 1);
-        }
-        .action-card h3 {
-            font-size: 0.95rem;
-            color: var(--primary-gold);
-            margin-bottom: 5px;
-        }
-        .action-card p {
             font-size: 0.8rem;
             color: #d1c7b7;
+            padding: 5px;
         }
-        /* Modal Rút Quẻ */
+        /* Modal tương tác */
         .modal {
             display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        .modal-content {
-            background: #2c1d11;
-            border: 2px solid var(--primary-gold);
-            padding: 25px;
-            border-radius: 12px;
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-            position: relative;
-        }
-        .close-btn {
-            position: absolute;
-            top: 10px; right: 15px;
-            color: var(--primary-gold);
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-
-    <header>
-        <h1>🪷 ĐI CHÙA ONLINE (Sansa Zen) 🪷</h1>
-    </header>
-
-    <div class="container">
-        <!-- Khu vực không gian chùa -->
-        <div class="sanctuary-view" id="sanctuary">
-            <div class="buddha-glow"></div>
-            <div class="altar-text">
-                <p>Nam Mô Bản Sư Thích Ca Mâu Ni Phật</p>
-                <small style="opacity: 0.8;">Tâm tịnh hướng thiện • Phước huệ trang nghiêm</small>
-            </div>
-        </div>
-
-        <!-- Phật tử Online Realtime -->
-        <div class="online-presence">
-            <span>✨ Đạo tràng hiện tại: <strong id="online-count">1</strong> Phật tử đang tịnh tâm</span>
-            <div class="online-avatars" id="avatar-list">
-                <!-- Danh sách Phật tử render động qua Firebase -->
-            </div>
-        </div>
-
-        <!-- Gõ Mõ Tích Công Đức -->
-        <div class="wooden-fish-section">
-            <button class="wooden-fish-btn" id="fish-btn" onclick="hitWoodenFish(event)">
-                <span>🪘</span>
-            </button>
-            <div class="merit-counter">
-                Công Đức Cá Nhân: <span id="personal-merit">0</span> | Tổng Đạo Tràng: <span id="total-merit">0</span>
-            </div>
-        </div>
-
-        <!-- Các tính năng phụ -->
-        <div class="actions-grid">
-            <div class="action-card" onclick="lightIncense()">
-                <h3>🕯️ Thắp Hương</h3>
-                <p id="incense-status">Dâng nén tâm hương</p>
-            </div>
-            <div class="action-card" onclick="openOracle()">
-                <h3>📜 Rút Quẻ Chánh Niệm</h3>
-                <p>Nhận thông điệp bình an</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Quẻ Thẻ -->
-    <div class="modal" id="oracle-modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeOracle()">&times;</span>
-            <h2 style="color: var(--primary-gold); margin-bottom: 15px;">Quẻ Cát Tường Hằng Ngày</h2>
-            <p id="oracle-text" style="font-style: italic; line-height: 1.6; margin-bottom: 20px;">Đang thỉnh quẻ...</p>
-            <button onclick="drawOracle()" style="background: var(--primary-gold); border: none; padding: 8px 20px; border-radius: 5px; font-weight: bold; cursor: pointer;">Rút Lại Quẻ</button>
-        </div>
-    </div>
-
-    <!-- Firebase SDK & Logic Realtime -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
-        import { getDatabase, ref, set, get, update, onValue, push, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-database.js";
-
-        // Cấu hình Firebase của bạn
-        const firebaseConfig = {
-            apiKey: "AIzaSyCzbmniWV4SIPRcjFxunVkHvAlOk3YjwIY",
-            authDomain: "dichuaonline-9424c.firebaseapp.com",
-            databaseURL: "https://dichuaonline-9424c-default-rtdb.firebaseio.com",
-            projectId: "dichuaonline-9424c",
-            storageBucket: "dichuaonline-9424c.firebasestorage.app",
-            messagingSenderId: "118952316543",
-            appId: "1:118952316543:web:4f9ecdc00c1b60e178794a",
-            measurementId: "G-5XYWKC3BYZ"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-
-        // Định danh ngẫu nhiên cho người dùng hiện tại
-        const userId = 'user_' + Math.random().toString(36.substring(2, 9));
-        const userName = 'Phật tử ' + Math.floor(Math.random() * 900 + 100);
-        let personalMerit = parseInt(localStorage.getItem('personal_merit') || '0');
-        document.getElementById('personal-merit').innerText = personalMerit;
-
-        // 1. Quản lý trạng thái Online (Presence) trong Realtime Database
-        const myPresenceRef = ref(db, 'presence/' + userId);
-        set(myPresenceRef, { name: userName, status: 'Đang tịnh tâm' });
-        
-        // Tự động xóa khỏi danh sách khi thoát trang
-        window.addEventListener('beforeunload', () => {
-            remove(myPresenceRef);
-        });
-
-        // Lắng nghe danh sách Phật tử online
-        const presenceRef = ref(db, 'presence');
-        onValue(presenceRef, (snapshot) => {
-            const data = snapshot.val();
-            const avatarList = document.getElementById('avatar-list');
-            avatarList.innerHTML = '';
-            let count = 0;
-            if (data) {
-                Object.values(data).forEach(user => {
-                    count++;
-                    const chip = document.createElement('div');
-                    chip.className = 'avatar-chip';
-                    chip.innerHTML = `🪷 ${user.name}`;
-                    avatarList.appendChild(chip);
-                });
-            }
-            document.getElementById('online-count').innerText = count;
-        });
-
-        // 2. Đồng bộ Tổng Công Đức toàn phòng
-        const totalMeritRef = ref(db, 'room/total_merit');
-        onValue(totalMeritRef, (snapshot) => {
-            const val = snapshot.val() || 0;
-            document.getElementById('total-merit').innerText = val;
-        });
-
-        // 3. Web Audio API - Phát âm thanh Mõ
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function playWoodenFishSound() {
-            if (audioCtx.state === 'suspended') { audioCtx.resume(); }
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(320, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.15);
-            gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.15);
-        }
-
-        // 4. Xử lý khi Gõ Mõ
-        window.hitWoodenFish = function(event) {
-            playWoodenFishSound();
-            personalMerit++;
-            localStorage.setItem('personal_merit', personalMerit);
-            document.getElementById('personal-merit').innerText = personalMerit;
-
-            // Cập nhật tổng công đức lên Firebase
-            get(totalMeritRef).then((snapshot) => {
-                const currentTotal = snapshot.val() || 0;
-                set(totalMeritRef, currentTotal + 1);
-            });
-
-            // Hiệu ứng chữ +1 bay lên
-            const rect = document.getElementById('fish-btn').getBoundingClientRect();
-            const floatEl = document.createElement('div');
-            floatEl.className = 'floating-text';
-            floatEl.innerText = '+1 Công Đức 🙏';
-            floatEl.style.left = (event.clientX - 20) + 'px';
-            floatEl.style.top = (rect.top - 20) + 'px';
-            document.body.appendChild(floatEl);
-            setTimeout(() => floatEl.remove(), 1000);
-        };
-
-        // Thắp hương đơn giản
-        window.lightIncense = function() {
-            const statusEl = document.getElementById('incense-status');
-            statusEl.innerText = '🕯️ Đang thắp hương (Khói tỏa nghi ngút)';
-            setTimeout(() => {
-                statusEl.innerText = 'Dâng nén tâm hương';
-            }, 10000);
-        };
-
-        // Hệ thống Quẻ Chánh Niệm
-        const quotes = [
-            "Hôm nay hãy mỉm cười đón nhận mọi thử thách, bởi bình an đến từ nội tâm.",
-            "Buông bỏ muộn phiền quá khứ, trọn vẹn với giây phút hiện tại.",
-            "Làm việc thiện từ những điều nhỏ nhất, phước đức tự khắc sinh sôi.",
-            "Tâm bất biến giữa dòng đời vạn biến.",
-            "Kiên nhẫn và từ bi là cội nguồn của mọi phước lành."
-        ];
-
-        window.openOracle = function() {
-            document.getElementById('oracle-modal').style.display = 'flex';
-            drawOracle();
-        };
-
-        window.closeOracle = function() {
-            document.getElementById('oracle-modal').style.display = 'none';
-        };
-
-        window.drawOracle = function() {
-            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-            document.getElementById('oracle-text').innerText = `"${randomQuote}"`;
-        };
-    </script>
-</body>
-</html>
+            position:
